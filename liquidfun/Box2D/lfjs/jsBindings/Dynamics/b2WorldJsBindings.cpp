@@ -7,7 +7,8 @@ extern "C" {
   extern void b2WorldEndContactBody(void* contactPtr);
   extern void b2WorldPreSolve(void* contactPtr, void* oldManifoldPtr);
   extern void b2WorldPostSolve(void* contactPtr, void* impulsePtr);
-  extern bool b2WorldQueryAABB(void* fixturePtr);
+  extern bool b2WorldFixtureCallback(void* fixturePtr);
+  extern bool b2WorldParticleCallback(void* particleSystem, double index);
   extern float32 b2WorldRayCastCallback(void* fixturePtr, double pointX, double pointY,
                                        double normalX, double normalY, double fraction);
 }
@@ -40,9 +41,12 @@ b2WorldContactListener listener;
 
 class QueryAABBCallback : public b2QueryCallback {
 public:
-  bool ReportFixture(b2Fixture* fixture) {
-    return b2WorldQueryAABB((void*)fixture);
-  }
+	bool ReportFixture(b2Fixture* fixture) {
+		return b2WorldFixtureCallback((void*)fixture);
+	}
+	bool ReportParticle(const b2ParticleSystem* particleSystem, int32 index){
+		return b2WorldParticleCallback((void*)particleSystem, index);
+	}
 };
 
 QueryAABBCallback queryAABBCallback;

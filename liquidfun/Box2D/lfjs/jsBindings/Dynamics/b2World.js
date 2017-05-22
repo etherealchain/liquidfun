@@ -30,8 +30,11 @@ b2World.PostSolve = function(contactPtr, impulsePtr) {
     new b2ContactImpulse(impulsePtr));
 };
 
-b2World.QueryAABB = function(fixturePtr) {
-  return world.queryAABBCallback.ReportFixture(world.fixturesLookup[fixturePtr]);
+b2World.FixtureCallback = function(fixturePtr) {
+	return world.queryAABBCallback.ReportFixture(world.fixturesLookup[fixturePtr]);
+};
+b2World.ParticleCallback = function(systemPtr,index) {
+	return world.queryAABBCallback.ReportParticle(world.particleSystemsLookup[systemPtr], index);
 };
 
 b2World.RayCast = function(fixturePtr, pointX, pointY, normalX, normalY, fraction) {
@@ -93,6 +96,7 @@ function b2World(gravity) {
   this.joints = [];
   this.listener = null;
   this.particleSystems = [];
+  this.particleSystemsLookup = {};
   this.ptr = b2World_Create(gravity.x, gravity.y);
   this.queryAABBCallback = null;
   this.rayCastCallback = null;
@@ -125,16 +129,17 @@ b2World._RemoveItem = function(item, list) {
 };
 
 b2World.prototype.CreateBody = function(bodyDef) {
-  var body = new b2Body(b2World_CreateBody(
-    this.ptr, bodyDef.active, bodyDef.allowSleep,
-    bodyDef.angle, bodyDef.angularVelocity, bodyDef.angularDamping,
-    bodyDef.awake, bodyDef.bullet, bodyDef.fixedRotation,
-    bodyDef.gravityScale, bodyDef.linearDamping, bodyDef.linearVelocity.x,
-    bodyDef.linearVelocity.y, bodyDef.position.x, bodyDef.position.y,
-    bodyDef.type, bodyDef.userData));
-  b2World._Push(body, this.bodies);
-  this.bodiesLookup[body.ptr] = body;
-  return body;
+	var body = new b2Body(b2World_CreateBody(
+		this.ptr, bodyDef.active, bodyDef.allowSleep,
+		bodyDef.angle, bodyDef.angularVelocity, bodyDef.angularDamping,
+		bodyDef.awake, bodyDef.bullet, bodyDef.fixedRotation,
+		bodyDef.gravityScale, bodyDef.linearDamping, bodyDef.linearVelocity.x,
+		bodyDef.linearVelocity.y, bodyDef.position.x, bodyDef.position.y,
+		bodyDef.type, bodyDef.userData));
+
+	b2World._Push(body, this.bodies);
+	this.bodiesLookup[body.ptr] = body;
+	return body;
 };
 
 b2World.prototype.CreateJoint = function(jointDef) {
@@ -144,18 +149,21 @@ b2World.prototype.CreateJoint = function(jointDef) {
 };
 
 b2World.prototype.CreateParticleSystem = function(psd) {
-  var ps = new b2ParticleSystem(b2World_CreateParticleSystem(
-    this.ptr, psd.colorMixingStrength,
-    psd.dampingStrength, psd.destroyByAge, psd.ejectionStrength,
-    psd.elasticStrength, psd.lifetimeGranularity, psd.powderStrength,
-    psd.pressureStrength, psd.radius, psd.repulsiveStrength,
-    psd.springStrength, psd.staticPressureIterations, psd.staticPressureRelaxation,
-    psd.staticPressureStrength, psd.surfaceTensionNormalStrength, psd.surfaceTensionPressureStrength,
-    psd.viscousStrength));
-  b2World._Push(ps, this.particleSystems);
-  ps.dampingStrength = psd.dampingStrength;
-  ps.radius = psd.radius;
-  return ps;
+	var ps = new b2ParticleSystem(b2World_CreateParticleSystem(
+		this.ptr, psd.colorMixingStrength,
+		psd.dampingStrength, psd.destroyByAge, psd.ejectionStrength,
+		psd.elasticStrength, psd.lifetimeGranularity, psd.powderStrength,
+		psd.pressureStrength, psd.radius, psd.repulsiveStrength,
+		psd.springStrength, psd.staticPressureIterations, psd.staticPressureRelaxation,
+		psd.staticPressureStrength, psd.surfaceTensionNormalStrength, psd.surfaceTensionPressureStrength,
+		psd.viscousStrength));
+
+    b2World._Push(ps, this.particleSystems);
+    this.particleSystemsLookup[ps.ptr] = ps;
+
+    ps.dampingStrength = psd.dampingStrength;
+    ps.radius = psd.radius;
+    return ps;
 };
 
 b2World.prototype.DestroyBody = function(body) {

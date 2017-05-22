@@ -64,6 +64,9 @@ var b2ParticleSystem_SetParticleLifetime =
 var b2ParticleSystem_SetRadius =
   Module.cwrap('b2ParticleSystem_SetRadius', 'null', ['number', 'number']);
 
+var b2ParticleSystem_SetVelocityBuffer = 
+    Module.cwrap('b2ParticleSystem_SetVelocityBuffer', 'null', ['number', 'number', 'number', 'number']);
+
 /** @constructor */
 function b2ParticleSystem(ptr) {
   this.dampingStrength = 1.0;
@@ -119,6 +122,9 @@ b2ParticleSystem.prototype.GetVelocityBuffer = function() {
   var offset = b2ParticleSystem_GetVelocityBuffer(this.ptr);
   return new Float32Array(Module.HEAPU8.buffer, offset, count);
 };
+b2ParticleSystem.prototype.SetVelocityBuffer = function(index, x, y){
+    b2ParticleSystem_SetVelocityBuffer(this.ptr, index, x, y);
+}
 
 b2ParticleSystem.prototype.SetDamping = function(damping) {
   this.dampingStrength = damping;

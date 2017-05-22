@@ -156,7 +156,8 @@ B2PARTICLESYSTEM = \
 	'_b2ParticleSystem_SetGravityScale', \
 	'_b2ParticleSystem_SetMaxParticleCount', \
 	'_b2ParticleSystem_SetParticleLifetime', \
-	'_b2ParticleSystem_SetRadius'
+	'_b2ParticleSystem_SetRadius', \
+	'_b2ParticleSystem_SetVelocityBuffer'
 
 B2POLYGONSHAPE = \
 	'_b2PolygonShape_CreateFixture_3', \
@@ -164,7 +165,7 @@ B2POLYGONSHAPE = \
 	'_b2PolygonShape_CreateFixture_5', \
 	'_b2PolygonShape_CreateFixture_6', \
 	'_b2PolygonShape_CreateFixture_7', \
-  '_b2PolygonShape_CreateFixture_8', \
+	'_b2PolygonShape_CreateFixture_8', \
 	'_b2PolygonShape_CreateParticleGroup_4', \
 	'_b2PolygonShape_DestroyParticlesInShape_4'
 
@@ -249,4 +250,4 @@ EXPORTS = EXPORTED_FUNCTIONS="[ \
 	]"
 
 bindings.js:
-	$(EMSCRIPTEN)/emcc -I../ -o lf_core.js jsBindings/jsBindings.cpp $(OBJECTS) -s $(EXPORTS) -s TOTAL_MEMORY=33554432 -O2 --js-library callbacks.js
+	$(EMSCRIPTEN)/emcc -I../ -o lf_core.js jsBindings/jsBindings.cpp $(OBJECTS) -s $(EXPORTS) -s ASSERTIONS=1 -s TOTAL_MEMORY=33554432 -O2 --js-library callbacks.js

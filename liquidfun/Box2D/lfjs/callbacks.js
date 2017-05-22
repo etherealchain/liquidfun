@@ -12,8 +12,11 @@ mergeInto(LibraryManager.library, {
   b2WorldPostSolve: function(contactPtr, impulsePtr) {
     b2World.PostSolve(contactPtr, impulsePtr);
   },
-  b2WorldQueryAABB: function(fixturePtr) {
-    return b2World.QueryAABB(fixturePtr);
+  b2WorldFixtureCallback: function(fixturePtr) {
+    return b2World.FixtureCallback(fixturePtr);
+  },
+  b2WorldParticleCallback: function(systemPtr,index) {
+    return b2World.ParticleCallback(systemPtr,index);
   },
   b2WorldRayCastCallback: function(fixturePtr, pointX, pointY,
                                    normalX, normalY, fraction) {

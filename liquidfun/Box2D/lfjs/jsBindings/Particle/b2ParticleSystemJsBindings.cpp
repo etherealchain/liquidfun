@@ -59,3 +59,9 @@ void b2ParticleSystem_SetParticleLifetime(void* particleSystem, double index, do
 void b2ParticleSystem_SetRadius(void* particleSystem, double radius) {
   ((b2ParticleSystem*)particleSystem)->SetRadius(radius);
 }
+
+void b2ParticleSystem_SetVelocityBuffer(void* particleSystem, double index, double x, double y){
+	b2Vec2& v = ((b2ParticleSystem*)particleSystem)->GetVelocityBuffer()[(int)index];
+	v.x = x;
+	v.y = y;
+}

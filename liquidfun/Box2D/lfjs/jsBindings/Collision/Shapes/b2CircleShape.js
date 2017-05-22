@@ -38,6 +38,24 @@ function b2CircleShape() {
   this.type = b2Shape_Type_e_circle;
 }
 
+b2CircleShape.prototype.ComputeAABB = function(aabb, transform){
+    var center = new b2Vec2();
+    b2Vec2.Mul(center, transform, this.position);
+    aabb.lowerBound.Set(center.x - this.radius, center.y - this.radius);
+    aabb.upperBound.Set(center.x + this.radius, center.y + this.radius);
+}
+
+b2CircleShape.prototype.TestPoint = function(transform, point){
+    var center = new b2Vec2();
+    var dis = new b2Vec2();
+    b2Vec2.Mul(center, transform, this.position);
+    b2Vec2.Sub(dis, point ,center);
+    
+    // dot
+    var disDot = dis.x*dis.x + dis.y*dis.y;
+    return disDot <= this.radius*this.radius;
+}
+
 b2CircleShape.prototype._CreateFixture = function(body, fixtureDef) {
   return b2CircleShape_CreateFixture(body.ptr,
     // fixture Def
